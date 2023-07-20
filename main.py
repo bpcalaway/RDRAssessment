@@ -15,6 +15,7 @@ app.register_blueprint(event_search)
 with open("config.json") as config_file:
     personal_data = json.load(config_file)
     app.config.update(personal_data)
+    app.config["debug"] = True
 
 # Create an engine that can be used at runtime
 engine = create_engine(f"postgresql+psycopg2://{app.config['PSQLUsername']}:{app.config['PSQLPassword']}@localhost:{app.config['PSQLPort']}/postgres")

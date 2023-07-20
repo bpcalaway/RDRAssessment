@@ -1,0 +1,3 @@
+ CREATE TABLE EVENTS (id BIGSERIAL, user_id INTEGER NOT NULL, title VARCHAR, description VARCHAR);
+
+ 

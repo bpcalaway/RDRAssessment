@@ -1,34 +1,28 @@
 from flask import Flask, Blueprint, request, current_app
-from sqlalchemy.orm import Session, Mapped
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+from ORMClasses.Events import Events
 import pandas as pd
 
 
 event = Blueprint("event", __name__, template_folder="templates")
 
-class Events:
-    __table_name__ = "events"
-
-    id: Mapped[int]
-    user_id: Mapped[int]
-    title: Mapped[str]
-    description: Mapped[str]
-
-    def __repr__(self) -> str:
-        return f"Event(id={self.id!r}, user_id={self.user_id!r}, title={self.title!r}, description={self.description!r})"
-
-@event.route("/event", methods=["GET", "POST"])
+@event.route("/event", methods=["GET", "POST", "DELETE"])
 def event_handler():
     if request.method == "POST":
         return post_event()
     elif request.method == "DELETE":
         return delete_event()
     else:
-        return get_event()
+        return get_event(request.args.get("id", None))
 
-def get_event():
-    statement = "Select * from events;"
-    df = pd.read_sql(statement, con=current_app.config["engine"])
-    return df.to_json()
+def get_event(id: int):
+    with Session(current_app.config["engine"]) as session:
+        statement = select(Events).where(Events.id==id)
+        for event in session.scalars(statement):
+            return event.to_json()
+    #df = pd.read_sql(statement, con=current_app.config["engine"])
+    #return df.to_json()
 
 def post_event():
     return "Good post friend"
