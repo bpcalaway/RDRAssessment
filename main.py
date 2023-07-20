@@ -5,8 +5,9 @@ from endpoints.search import event_search
 from sqlalchemy import create_engine
 import json
 
-# We're only running locally, so we're not setting up CORS or anything
+# We're only running locally, so we're not setting up CORS or anything.  Debug is fine for rapid dev, not being deployed
 app = Flask(__name__)
+app.debug = True
 app.register_blueprint(event)
 app.register_blueprint(event_list)
 app.register_blueprint(event_search)
@@ -27,5 +28,5 @@ app.config["engine"] = engine
 def index():
     return render_template("index.html")
 
-print("Starting local webservice on port 8080...")
-app.run(host="localhost", port=8080)
+if __name__ == "__main__":
+    app.run(host="localhost", port=8080)
