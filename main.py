@@ -2,6 +2,7 @@ from flask import Flask, render_template, Blueprint
 from endpoints.event import event
 from endpoints.list import event_list
 from endpoints.search import event_search
+from endpoints.tableHandler import create_events_table
 from sqlalchemy import create_engine
 import json
 
@@ -23,6 +24,7 @@ engine = create_engine(
     f"postgresql+psycopg2://{app.config['PSQLUsername']}:{app.config['PSQLPassword']}@localhost:{app.config['PSQLPort']}/postgres"
 )
 app.config["engine"] = engine
+create_events_table(engine)
 
 
 @app.route("/")
@@ -32,3 +34,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8080)
+    # Here, at the start of the app, recreate the events table

@@ -2,7 +2,6 @@ from flask import Flask, Blueprint, request, current_app
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from ORMClasses.Events import Events
-from json import loads
 
 
 event = Blueprint("event", __name__, template_folder="templates")
