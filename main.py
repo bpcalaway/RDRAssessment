@@ -19,14 +19,16 @@ with open("config.json") as config_file:
     app.config["debug"] = True
 
 # Create an engine that can be used at runtime
-engine = create_engine(f"postgresql+psycopg2://{app.config['PSQLUsername']}:{app.config['PSQLPassword']}@localhost:{app.config['PSQLPort']}/postgres")
+engine = create_engine(
+    f"postgresql+psycopg2://{app.config['PSQLUsername']}:{app.config['PSQLPassword']}@localhost:{app.config['PSQLPort']}/postgres"
+)
 app.config["engine"] = engine
-
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8080)
