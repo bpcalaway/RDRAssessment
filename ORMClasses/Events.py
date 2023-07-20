@@ -7,6 +7,7 @@ class Base(DeclarativeBase):
 class Events(Base):
     __tablename__ = "events"
 
+    # This is technically a serial, but I think this works
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer)
     title = Column(String)

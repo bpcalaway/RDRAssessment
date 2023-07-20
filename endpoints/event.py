@@ -9,11 +9,13 @@ event = Blueprint("event", __name__, template_folder="templates")
 
 @event.route("/event", methods=["GET", "POST", "DELETE"])
 def event_handler():
+    # We're using a standard endpoint, handled by request type
     if request.method == "POST":
-        data = request.form
+        data = dict(request.form)
         return post_event(data.get("user_id", None), data.get("title", ""), data.get("description", ""))
     elif request.method == "DELETE":
-        return delete_event()
+        data = dict(request.form)
+        return delete_event(data.get("id"))
     else:
         return get_event(request.args.get("id", None))
 
@@ -30,7 +32,14 @@ def post_event(user_id: int, title=str(), description=str()):
         new_event = Events(user_id=user_id, title=title, description=description)
         session.add(new_event)
         session.commit()
-    return "Good post friend"
+    return 'Success', 200, {'Content-Type': 'text/plain'}
 
-def delete_event():
-    return "That'll fix it"
+def delete_event(id: int):
+    # Delete an event by its unique identifier, in a real example there would also be an ownership check
+    with Session(current_app.config["engine"]) as session:
+        statement = select(Events).where(Events.id==id)
+        # offshot you've somehow violated a key constraint
+        for event in session.scalars(statement):
+            session.delete(event)
+        session.commit()
+    return 'Success', 200, {'Content-Type': 'text/plain'}
